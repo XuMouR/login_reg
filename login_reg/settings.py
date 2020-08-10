@@ -153,8 +153,8 @@ EMAIL_USE_TLS = False   #是否使用TLS安全传输协议(用于在两个通信
 EMAIL_USE_SSL = True    #是否使用SSL加密，qq企业邮箱要求使用
 EMAIL_HOST = 'smtp.qq.com'   #发送邮件的邮箱 的 SMTP服务器，这里用了qq邮箱
 EMAIL_PORT=465  # qq邮箱的发送邮件的端口号
-EMAIL_HOST_USER='2745254260@qq.com' # 发送邮件的账号
-EMAIL_HOST_PASSWORD='pquyxxghsjildhdi' # 这里从qq邮箱申请的授权码
+EMAIL_HOST_USER='@qq.com' # 发送邮件的账号
+EMAIL_HOST_PASSWORD='' # 这里从qq邮箱申请的授权码
 
 # 注册有效期天数
 CONFIRM_DAYS = 1

@@ -140,32 +140,30 @@ def make_confirm_string(user):
     ConfirmString.objects.create(code=code, user=user)
     return code
 
+'''
 
+def send_email(email, code):
 
-def send_email(email,code):
-    '''
-    text_content是用于当HTML内容无效时的替代txt文本。
-    '''
+    # text_content是用于当HTML内容无效时的替代txt文本。
+
 
     subject = '来自XuMou项目的邮箱注册确认邮件'
     text_content = '如果你看到这条消息，说明你的邮箱服务器不提供HTML链接功能，请联系管理员！'
 
-
     # subject, from_email, to = '来自XuMou的邮箱注册确认邮件', '发送邮箱@qq.com', '接受邮箱@qq.com'
 
-    html_content = '<p>感谢注册我的博客<a href="http://{}/confirm/?code={}" target=blank>确认注册！</a></p><p>请点击链接完成注册!</p> <p>此链接有效期为{}天！</p>'.format("127.0.0.1:8000",code,settings.CONFIRM_DAYS)
-    print("点击的〉〉",html_content)
-    '''
-    
-    <p>感谢注册我的博客<a href="http://127.0.0.1:8000/confirm/?code=None" target=blank></a>,</p><p>请点击下面的链接完成注册!</p> <p>此链接有效期为1天！</p>
-    
-    '''
+    html_content = '<p>感谢注册我的博客<a href="http://{}/confirm/?code={}" target=blank>确认注册！</a></p><p>请点击链接完成注册!</p> <p>此链接有效期为{}天！</p>'.format(
+        "127.0.0.1:8000", code, settings.CONFIRM_DAYS)
+    print("点击的〉〉", html_content)
+
 
     msg = EmailMultiAlternatives(subject, text_content, settings.EMAIL_HOST_USER, [email])
     msg.attach_alternative(html_content, "text/html")
     msg.send()
 
 
+
+'''
 # 邮件确认函数
 def user_confirm(request):
     '''
