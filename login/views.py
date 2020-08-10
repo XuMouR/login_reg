@@ -94,7 +94,11 @@ def register(request):
 
                 code = make_confirm_string(new_user)  # 确认
                 print("确认码为〉〉",code)
-                send_email(email, code)
+
+                # send_email(email, code)
+                # 使用celery进行异步发送注册确认确认
+                from celery_tasks.tasks import send_register_active_email  # 导入celery发邮件的方法
+                send_register_active_email(email,code)
                 message = '请前往邮箱进行确认！'
                 return render(request, 'confirm.html', locals())
         else:
