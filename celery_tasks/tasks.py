@@ -14,6 +14,16 @@ from celery import Celery  # 导入celery包# 创建一个Celery类的实例对�
 
 app = Celery('celery_tasks.tasks', broker='redis://127.0.0.1:6379/2')  # 使用redis数据库
 
+# 配置对应的配置项 ，不然运行的时候会报错
+from kombu import serialization
+serialization.registry._decoders.pop("application/x-python-serialize")
+
+app.conf.update(
+    CELERY_ACCEPT_CONTENT = ['json'],
+    CELERY_TASK_SERIALIZER = 'json',
+    CELERY_RESULT_SERIALIZER = 'json',
+)
+
 
 # 定义任务函数
 @app.task  # 装饰器，必不可少
@@ -51,3 +61,4 @@ def send_register_active_email(to_email, code):
     msg = EmailMultiAlternatives(subject, text_content, settings.EMAIL_HOST_USER, [to_email])
     msg.attach_alternative(html_content, "text/html")
     msg.send()
+
