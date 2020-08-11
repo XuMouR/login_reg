@@ -27,7 +27,7 @@ class User(models.Model):
 class ConfirmString(models.Model):
     code = models.CharField(max_length=256)
     user = models.OneToOneField("User", on_delete=models.CASCADE)
-    c_time = models.DateTimeField(auto_now_add=True) # 创建时间
+    c_time = models.DateTimeField(auto_now_add=True)  # 创建时间
 
     def __str__(self):
         return self.user.name + ":  " + self.code

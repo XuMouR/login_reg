@@ -25,4 +25,7 @@ urlpatterns = [
     path('logout/', views.logout),
     path('captcha/', include('captcha.urls')),  # 增加这一行
     path('confirm/', views.user_confirm),
+    # 第三方登录
+    path('', include('social_django.urls', namespace='social')),
+    path('cententindex/',views.centent_index),
 ]

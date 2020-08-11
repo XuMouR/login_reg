@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+
 '''
 项目地址：https://www.liujiangblog.com/course/django/110
 
@@ -23,7 +24,6 @@ admin123456
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
@@ -34,7 +34,6 @@ SECRET_KEY = 'yn9j@*x!n-hs^mfdf*+qj-@bamo(bam!c%wf8@ibh1rq$37t)i'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -47,6 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'login',
     'captcha',
+    'social_django',  # 三方登录组件
 ]
 
 MIDDLEWARE = [
@@ -72,13 +72,15 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # 第三方微博登录
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'login_reg.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
@@ -124,19 +126,17 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
-LANGUAGE_CODE = 'zh-hans'     # 这里修改了
+LANGUAGE_CODE = 'zh-hans'  # 这里修改了
 
-TIME_ZONE = 'Asia/Shanghai'    # 这里修改了
+TIME_ZONE = 'Asia/Shanghai'  # 这里修改了
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = False    # 这里修改了
-
+USE_TZ = False  # 这里修改了
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
@@ -149,12 +149,28 @@ STATIC_URL = '/static/'
 发送邮件服务器：smtp.qq.com，使用SSL，端口号465或587
 '''
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_USE_TLS = False   #是否使用TLS安全传输协议(用于在两个通信应用程序之间提供保密性和数据完整性。)
-EMAIL_USE_SSL = True    #是否使用SSL加密，qq企业邮箱要求使用
-EMAIL_HOST = 'smtp.qq.com'   #发送邮件的邮箱 的 SMTP服务器，这里用了qq邮箱
-EMAIL_PORT=465  # qq邮箱的发送邮件的端口号
-EMAIL_HOST_USER='2745254260@qq.com' # 发送邮件的账号
-EMAIL_HOST_PASSWORD='' # 这里从qq邮箱申请的授权码
+EMAIL_USE_TLS = False  # 是否使用TLS安全传输协议(用于在两个通信应用程序之间提供保密性和数据完整性。)
+EMAIL_USE_SSL = True  # 是否使用SSL加密，qq企业邮箱要求使用
+EMAIL_HOST = 'smtp.qq.com'  # 发送邮件的邮箱 的 SMTP服务器，这里用了qq邮箱
+EMAIL_PORT = 465  # qq邮箱的发送邮件的端口号
+EMAIL_HOST_USER = '@qq.com'  # 发送邮件的账号
+EMAIL_HOST_PASSWORD = ''  # 这里从qq邮箱申请的授权码
 
 # 注册有效期天数
 CONFIRM_DAYS = 1
+
+# 第三方登录
+# 设置邮箱和用户名和手机号均可登录
+AUTHENTICATION_BACKENDS = (
+    # 'users.views.CustomBackend',
+    'social_core.backends.weibo.WeiboOAuth2',  # 微博登录
+    # 'social_core.backends.qq.QQOAuth2',         # qq登录
+    # 'social_core.backends.weixin.WeixinOAuth2',     # 微信登录
+    # 'django.contrib.auth.backends.ModelBackend',
+)
+# 第三方登录，里面的值是你的开放平台对应的值
+SOCIAL_AUTH_WEIBO_KEY = '2245099104'
+SOCIAL_AUTH_WEIBO_SECRET = ''  # 微博上的 APP SECRET
+
+# 第三方登录，登录成功后跳转到首页 cententindex
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/index/'

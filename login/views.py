@@ -8,15 +8,24 @@ from .models import *
 from . import forms
 
 import datetime
-from .models  import ConfirmString
+from .models import ConfirmString
 from django.core.mail import EmailMultiAlternatives
 
 # 用户密码加密
 import hashlib
 
 
+# 先设置cententindex 是不需要登录的
+
+def centent_index(request):
+    return HttpResponse("测试weibo登录")
+
+
+
+
 def index(request):
-    if not request.session.get("is_login", None):
+    print(">>>",request)
+    if not request.session.get("is_login", None) or not request.cookie.get("token"):
         return redirect('/login/')
     return render(request, 'index.html')
 
@@ -93,12 +102,12 @@ def register(request):
                 new_user.save()
 
                 code = make_confirm_string(new_user)  # 确认
-                print("确认码为〉〉",code)
+                print("确认码为〉〉", code)
 
                 # send_email(email, code)
                 # 使用celery进行异步发送注册确认确认
                 from celery_tasks.tasks import send_register_active_email  # 导入celery发邮件的方法
-                send_register_active_email(email,code)
+                send_register_active_email(email, code)
                 message = '请前往邮箱进行确认！'
                 return render(request, 'confirm.html', locals())
         else:
@@ -140,6 +149,7 @@ def make_confirm_string(user):
     ConfirmString.objects.create(code=code, user=user)
     return code
 
+
 '''
 
 def send_email(email, code):
@@ -164,6 +174,8 @@ def send_email(email, code):
 
 
 '''
+
+
 # 邮件确认函数
 def user_confirm(request):
     '''
@@ -176,16 +188,16 @@ def user_confirm(request):
         如果未超期，修改用户的has_confirmed字段为True，并保存，表示通过确认了。然后删除注册码，但不删除用户本身。最后返回confirm.html页面，并提示。
 
     '''
-    code=request.GET.get('code',None)
-    message=''
+    code = request.GET.get('code', None)
+    message = ''
     try:
-        confirm=ConfirmString.objects.get(code=code)
+        confirm = ConfirmString.objects.get(code=code)
     except:
-        message="无效的确认请求"
-        return render(request,'confirm.html',locals())
-    c_time=confirm.c_time
-    now=datetime.datetime.now()
-    if now > c_time+datetime.timedelta(settings.CONFIRM_DAYS):
+        message = "无效的确认请求"
+        return render(request, 'confirm.html', locals())
+    c_time = confirm.c_time
+    now = datetime.datetime.now()
+    if now > c_time + datetime.timedelta(settings.CONFIRM_DAYS):
         confirm.user.delete()
         message = '您的邮件已经过期！请重新注册!'
         return render(request, 'confirm.html', locals())
@@ -195,6 +207,3 @@ def user_confirm(request):
         confirm.delete()
         message = '感谢确认，请使用账户登录！'
         return render(request, 'confirm.html', locals())
-
-
-
