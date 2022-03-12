@@ -7,7 +7,7 @@ django-simple-captcha==0.5.12
 importlib-metadata==1.7.0
 kombu==4.6.11
 mysqlclient==2.0.1
-Pillow==7.2.0
+Pillow==9.0.1
 PyMySQL==0.10.0
 pytz==2020.1
 redis==3.5.3
